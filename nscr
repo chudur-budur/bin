@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# a handy script to open a new bash script
+# Usage: nscr [filename]
+
+filename=$1 ;
+
+if [ $# -lt 1 -o $# -gt 1 ]; then
+	echo "Usage: nscr [filename]";
+	exit 0;
+else
+	touch "${filename}";
+	echo "#!/bin/bash" > "${filename}" ;
+	echo "#comments: " >> "${filename}" ;
+	echo "" >> "${filename}" ;
+	echo "shopt -s extglob" >> "${filename}" ;
+	echo "cpath=\$( cd \"\$( dirname \"\${BASH_SOURCE[0]}\" )\" && pwd )" >> "${filename}";
+	chmod 775 "${filename}";
+fi

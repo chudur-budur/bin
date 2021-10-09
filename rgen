@@ -1,0 +1,44 @@
+#!/bin/bash
+# generates a set of N random seed
+
+shopt -s extglob ;
+cpath=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) ;
+
+n=$1
+t=$2
+outfile=$3
+
+_usage()
+{
+	printf "Usage: ./rgen [n] [type] [out file]\n";
+	exit 0;
+}
+
+if [[ -z $n ]] || [[ -z $t ]]; then
+	echo "error: some of the parameters are missing, hence exiting ...";
+	_usage ;
+fi
+
+if [ -n "$outfile" ] && [ -f "$outfile" ]; then
+	rm "$outfile" ;
+fi
+
+for (( i=0; i<n; i++ ))
+do
+	# a random value between [0.0, 1.0) 
+	v1="$RANDOM"; 
+	# a 13 digit random value like 1234567890123
+	v2=$(tr -c -d 0-9 < /dev/urandom | head -c 13);
+	if [ -n "$outfile" ]; then
+		if [[ $i == 0 ]]; then
+			[ "$t" == "-f" ] && printf "%0.5f\n" "$(bc <<< scale=9\;"$v1"/32767)" > "$outfile";
+			[ "$t" == "-d" ] && echo "$v2" > "$outfile";
+		else 
+			[ "$t" == "-f" ] && printf "%0.5f\n" "$(bc <<< scale=9\;"$v1"/32767)" >> "$outfile";
+			[ "$t" == "-d" ] && echo "$v2" >> "$outfile";
+		fi
+	else
+		[ "$t" == "-f" ] && printf "%0.5f\n" "$(bc <<< scale=9\;"$RANDOM"/32767)";
+		[ "$t" == "-d" ] && echo "$v2";
+	fi
+done

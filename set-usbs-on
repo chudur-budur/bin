@@ -1,0 +1,20 @@
+#! /bin/sh
+# This script helps to shut down all the usb devices for Ubuntu 12.04.
+# For some reason if one of the usb devices are turned "auto" the 
+# shutdown-reboot loop starts. So we are manually setting them all to "on".
+
+# You can also add this function in the /etc/init.d/halt script
+# call it before the "do_stop" function in the "stop" switch in "case $1"
+
+# NOTE: run this script as root
+
+# usb device control path
+usbcontrolpath="/sys/bus/usb/devices/*/power/control"
+
+# set all of them to "on" 
+for dev in $usbcontrolpath;
+do
+	echo "Setting $dev: " `cat $dev` "to on"
+	echo on > $dev
+	echo ""
+done

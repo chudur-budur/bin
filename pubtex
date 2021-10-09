@@ -1,0 +1,199 @@
+#!/bin/bash
+
+# AKM Khaled Ahsan Talukder - August 2008
+# Department of Computer Science and Software Engineering, 
+# The University of Melbourne, Victoria 3010, Australia.
+
+# Script to compile a LaTeX document and cleans all garbage.
+# To make pubtex system wide available, save this file in 
+# /usr/local/bin or create a symbolic link.
+
+# Example input and output (from the bash prompt):
+# ./pubtex -l a4 par1 'another arg' 'wow!*\?' test.tex --dvi " very long "
+# Option l: compile with latex
+#		argument a4: paper size of a4
+# Option dvi: no argument
+# Remaining arguments:
+# --> `par1'
+# --> `another arg'
+# --> `wow!*\?'
+# --> test.tex --> this will be selected for compiling 
+# --> " very long "
+
+date
+rst=$(tput sgr0) # Text reset
+tred=$(tput setaf 1) # Text Red
+
+optpath="/usr/local/opt";
+# get the gnu-getopt if the machine is osx and homebrew is installed
+optparser="getopt";
+if [ "$HOSTNAME" = "ktalukder-mbp2" ] || [ "$HOSTNAME" = "kopashamsu.local" ] ; then
+	if [ -d "$optpath" ]; then
+		getoptpath="$optpath/gnu-getopt/bin";
+		if [ -d "$getoptpath" ]; then
+			optparser="$getoptpath/getopt";
+		fi	
+	fi
+fi
+
+# variables
+latex="no"
+pdflatex="no"
+papersize="a4"
+keepdvi="no"
+keepbbl="no"
+filename="empty"
+
+
+# show usage function
+_printUsage()
+{
+cat << EOF
+Usage: ${0##*/} [COMPILER TYPE] [PAPER SIZE] [KEEP DVI] [KEEP BBL] [TEX FILE]
+Compile a latex document.
+
+    COMPILER TYPE		-l|--ltx	Use latex
+    				-p|--pdl	Use pdflatex, no ps file will be created
+    PAPER SIZE (-l|--ltx only)	-a4		A4 paper
+    				-ltr		Letter
+						Not compatible with -p|--pdl flag
+    KEEP DVI (OPTIONAL)		-d|--dvi	Keep the generated dvi (or generate one if none)
+    KEEP BBL (OPTIONAL)		-b|--bbl	Keep the generated bbl file
+EOF
+}
+
+# compile with latex
+_useLatex()
+{
+	echo "${tred}------------ Using LaTeX -----------------------${rst}" ;
+	echo "${tred}Compiling LaTeX file '${filename}.tex': Pass 1${rst}" ;
+		latex ${filename}.tex 
+	echo "${tred}Compiling BibTeX${rst}" ;
+		bibtex ${filename}
+	echo "${tred}Compiling LaTeX file '${filename}.tex': Pass 2${rst}" ;
+		latex ${filename}.tex
+	echo "${tred}Compiling LaTeX file '${filename}.tex': Pass 3${rst}" ;
+		latex ${filename}.tex
+	echo "${tred}Done${rst}" ;
+	echo "${tred}Creating ps file: '${filename}.dvi' --> '${filename}.ps'${rst}" ;
+		dvips -t ${papersize} -o ${filename}.ps ${filename}.dvi
+	[ ${keepdvi} = "no" ] && rm -f ${filename}.dvi ;
+	echo "${tred}Creating pdf file: '${filename}.ps' --> '${filename}.pdf'${rst}" ;
+		ps2pdf ${filename}.ps ${filename}.pdf
+	echo "${tred}Done LaTeX${rst}" ;
+}
+
+# compile with pdflatex
+_usePdfLatex()
+{
+	if [ ${keepdvi} = "no" ]; then
+		echo "${tred}--------- Using PdfLaTeX -----------------------${rst}" ;
+		echo "${tred}Compiling LaTeX file '${filename}.tex': Pass 1${rst}" ;
+			pdflatex -shell-escape ${filename}.tex
+		echo "${tred}Compiling BibTeX${rst}" ;
+			bibtex ${filename}
+		echo "${tred}Compiling LaTeX file '${filename}.tex': Pass 2${rst}" ;
+			pdflatex -shell-escape ${filename}.tex
+		echo "${tred}Compiling LaTeX file '${filename}.tex': Pass 3${rst}" ;
+			pdflatex -shell-escape ${filename}.tex
+		echo "${tred}Done PDFLaTeX${rst}"
+	fi
+	# this does not work, need to fix
+	# elif [ ${keepdvi} = "yes" ]; then 
+	# 	echo "${tred}--------- Using PdfLaTeX with DVI output --------${rst}"
+	# 	echo "${tred}Compiling LaTeX file '${filename}.tex': Pass 1${rst}"
+	# 		pdflatex -shell-escape -output-format dvi ${filename}.tex
+	# 	echo "${tred}Compiling BibTeX${rst}"
+	# 		bibtex ${filename}
+	# 	echo "${tred}Compiling LaTeX file '${filename}.tex': Pass 2${rst}"
+	# 		pdflatex -shell-escape -output-format dvi ${filename}.tex
+	# 	echo "${tred}Compiling LaTeX file '${filename}.tex': Pass 3${rst}"
+	# 		pdflatex -shell-escape -output-format dvi ${filename}.tex
+	# 	echo "${tred}Done PDFLaTeX with DVI output${rst}"
+	# fi
+}
+
+_cleanUp()
+{
+	rm -rf ./*~
+	# some latex own produce
+	rm -rf ./*.log
+	rm -rf ./*.aux
+	rm -rf ./*.bak
+	rm -rf ./*.blg
+	# rm -rf *.out
+	# produced by beamer	
+	rm -rf ./*.snm
+	rm -rf ./*.nav
+	rm -rf ./*.toc
+	rm -rf ./*.vrb
+	# some unknown produce
+	rm -rf ./*.lof
+	rm -rf ./*.lot
+	rm -rf ./*.spl
+	rm -rf ./*.synctex.gz
+	# now apply some rules
+	if [ ${keepdvi} = "no" ]; then
+		rm -rf ./*.dvi ;
+	fi
+	if [ ${keepbbl} = "no" ]; then
+	 	rm -rf ./*.bbl ;
+	fi
+	rm -rf ${filename}.out
+}
+
+# if the number of args < 2 then
+[ $# -lt 2 ] && _printUsage && exit 0;
+
+# Note that we use `"$@"' to let each command-line parameter expand to a 
+# separate word. The quotes around `$@' are essential!
+# We need TEMP as the `eval set --' would nuke the return value of getopt.
+TEMP=$($optparser -o h?l:pdb --long ltx:,pdl,dvi,bbl -n 'pubtex' -- "$@")
+
+# Note the quotes around `$TEMP': they are essential!
+eval set -- "$TEMP"
+
+# parse the command line options
+while true ; do
+	case "$1" in
+		-h|\?)		_printUsage ; exit 0 ;;
+		-l|--ltx)	latex="yes"
+				case "$2" in
+					"-a4")	papersize="a4"; shift 2 ;;
+					"-ltr")	papersize="ltr"; shift 2 ;;
+					*)	_printUsage; exit 0 ;;
+				esac ;;
+		-p|--pdl)	pdflatex="yes" ; shift ;;
+		-d|--dvi) 	keepdvi="yes" ; shift ;;
+		-b|--bbl) 	keepbbl="yes" ; shift ;;
+		--) 		shift ; break ;;
+		*) 		_printUsage; exit 0 ;;
+	esac
+done
+
+# get the filename from the remaining args
+arg=$1 ;
+name="${arg%.*}"; ext="${arg##*.}";
+[ "${ext}" = "tex" -o "${ext}" = "${name}" ] && filename=$name;
+
+# sanity check
+if [ "${filename}" = "empty" ]; then
+	echo "${tred}Error: No .tex file provided !${rst}"
+	_printUsage;
+elif [ ! -f "${filename}.tex" ]; then
+	echo "${tred}Error: ${filename}.tex not found${rst}";
+	_printUsage;
+fi
+
+# compile
+if [ ${latex} = "yes" ]; then
+	_useLatex;		
+	echo "${tred}Cleaning up${rst}"
+	_cleanUp;
+	echo "${tred}All Done${rst}"
+elif [ ${pdflatex} = "yes" ]; then
+	_usePdfLatex;		
+	echo "${tred}Cleaning up${rst}"
+	_cleanUp;
+	echo "${tred}All Done${rst}"
+fi

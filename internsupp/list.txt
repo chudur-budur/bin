@@ -1,0 +1,280 @@
+Inkling			None
+Lux			None
+Tinder			None
+Lyft			Apply
+Bungie			None
+Qualcomm			Apply
+Blend			Apply
+Guidewire			None
+Chexology			Apply
+Zynga			Apply
+Thomson Reuters			Apply
+Zuora			None
+Mixpanel			None
+AppNexus			None
+Statefarm			Apply
+Airbnb			Apply
+IXL Learning			Apply
+ZocDoc			None
+Wayfair			Apply
+D.E. Shaw			Apply
+Tendigi			Apply
+Vmware			Apply
+Nordstrom			None
+Mozilla			Apply
+Ancestry			Apply
+Robinhood			None
+Bitly			None
+Upwork			None
+Akamai			Apply
+Appboy			None
+Walmart Labs			Apply
+RedHat			None
+Cruise			None
+Edmunds			Apply
+Grubhub			None
+Drawbridge			None
+Top Hat			Apply
+Benbria			None
+Cloudera			None
+Jane Street			Apply
+HubSpot			Apply
+Zurb			None
+Foursquare			Apply
+Bloom Reach			None
+SurveyMonkey			None
+Yik Yak			None
+Zalando			None
+Doordash			None
+Yelp			Apply
+Fidelity			Apply
+Scribd			None
+Fivestars			Apply
+LinkedIn			Apply
+PayPal			Apply
+MailChimp			Apply
+Gigster			Apply
+Beepi			None
+ShoreTel			None
+Uber			Apply
+Minted			None
+Bitnami			None
+GitLab			None
+Shopkick			None
+Priceline			Apply
+Hp			Apply
+iCIMS			Apply
+Pure Storage			Apply
+MathWorks			Apply
+Visualbi			Apply
+Yext			Apply
+BigCommerce			None
+Lever			None
+Eventbrite			None
+Dropbox			Apply
+IBM			Apply
+Pandora			None
+Github			Apply
+ReadMe			None
+Vectorworks			Apply
+Jive			None
+Duolingo			Apply
+Houzz			None
+Pebble			None
+Xero			Apply
+Zenefits			None
+BitTitan			Apply
+Lookout			None
+Uptake			Apply
+Twilio			Apply
+Automated Insights			None
+SpaceX			Apply
+Marketo			None
+Flatiron			Apply
+GoDaddy			Apply
+Telenav			None
+Snapchat			None
+Goldman Sachs			Apply
+Amobee			None
+Stripe			Apply
+Squarespace			Apply
+Galois			Apply
+Jawbone			None
+Boxed			None
+Palantir			Apply
+Interactive Intelligence			Apply
+Classy			None
+Yahoo			Apply
+Medium			None
+Constant Contact			None
+GumGum			Apply
+ShipHawk			None
+ThoughtSpot			Apply
+Youtube			None
+VEVO			None
+Opower			None
+Viacom			Apply
+Tableau			Apply
+Zillow			Apply
+Bloomberg			Apply
+Intel			Apply
+Intentional Software			Apply
+Slack			None
+Findery			None
+MuleSoft			Apply
+Nvidia			Apply
+Two Sigma			None
+Betterment			None
+Twitter			Apply
+Flipboard			None
+AeroFS			Apply
+MongoDB			Apply
+Square			Apply
+Wolt			None
+BrightBytes			None
+MaxPoint			Apply
+Work Market			None
+Coinbase			None
+Tumblr			Apply
+YouNow			None
+Esri			Apply
+Shutterfly			Apply
+Lin & Associates			Apply
+MeetMe			None
+Figma			Apply
+RetailNext			None
+Zappos			Apply
+Venmo			None
+Optimizely			None
+Socotra			None
+Operator			None
+Seamless			None
+SeatGeek			None
+Box			Apply
+Medallia			Apply
+Atlassian			Apply
+Percolate			None
+Thumbtack			Apply
+Twitch			None
+Evernote			Apply
+Gilt			Apply
+TripAdvisor			Apply
+Ebay			Apply
+Valve			None
+Gusto			None
+Kinnek			Apply
+HomeAway			Apply
+Facebook			Apply
+Credit Sesame			Apply
+Codeship			Apply
+WhatsApp			Apply
+Cumulus Networks			Apply
+Axosoft			None
+Couple			Apply
+CrowdRise			None
+Teradata			None
+Quantcast			Apply
+Workiva			Apply
+Cisco			Apply
+Fitbit			Apply
+Logitech			None
+Intuit			Apply
+Skillshare			None
+Capital One			Apply
+Google			Apply
+TeckPert			Apply
+Postmates			Apply
+Disney			Apply
+Kahn Academy			Apply
+Salesforce			Apply
+Zendesk			Apply
+Lucid Software			Apply
+Sift Science			Apply
+Blackbaud			Apply
+Nasa			None
+Sensus			Apply
+Asana			Apply
+Microsoft			Apply
+Wattpad			None
+Dot&Bo;			None
+Affirm Delphix			Apply
+LiveRamp			Apply
+DJI			None
+BuzzFeed			None
+Shopify			Apply
+Cogo Labs			Apply
+Epic			None
+Brigade			None
+Infinera			Apply
+Broadway Technology			Apply
+ViralHeat			None
+Roku			None
+Pivotal			None
+Willow Tree			Apply
+Datadog			Apply
+Stackfolio			Apply
+Study Soup			Apply
+ZenMate			Apply
+Okta			None
+Illumina			None
+Boomerang			None
+Nest			None
+Audience			None
+Zscaler			Apply
+Weebly			None
+August			Apply
+Workday			Apply
+WeFunder			Apply
+ClearSlide			None
+Kayak			Apply
+App Dynamics			None
+Juniper			Apply
+LendUp			None
+HootSuite			Apply
+Zoosk			None
+Groupon			Apply
+Looker			None
+Casper			None
+Redfin			Apply
+Ultimate Software			Apply
+Etsy			Apply
+Visa			Apply
+QuantShield			Apply
+BrainTree			Apply
+Sqreen			Apply
+Quora			Apply
+Lob			Apply
+Nextdoor			Apply
+AirWare			None
+Edmodo			None
+Quizlet			None
+USAA			Apply
+Hulu			Apply
+NetSuite			Apply
+ElasticSearch			None
+StackOverflow			None
+Qualtrics			Apply
+LastPass			None
+American Express			Apply
+Upthere			None
+Addepar			Apply
+Mindgrub			Apply
+Oracle			Apply
+IDEO			Apply
+BNY Mellon			Apply
+Karat			Apply
+Tesla			None
+Mobi Manage			Apply
+Tint			None
+HackerRank			None
+Frog			Apply
+Pinterest			Apply
+Vertaforte			None
+Riot Games			Apply
+Alarm.com			Apply
+AppFolio			Apply
+Vimeo			None
+Apple			Apply
+Rackspace			None
+Amazon			Apply
+CBS Interactive			None

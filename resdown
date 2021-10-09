@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# A script to reduce the resolution of an image
+# using imagemagick. It will be better to move
+# all images into one single folder and issue this 
+# command
+# Usage:
+# 	resdown [%-REDUCTION] [FILE EXTENSION] [REPLACE OPTION: -r]
+
+# To enable bash extended pattern matching
+shopt -s extglob;
+
+perc=$1
+ext=$2
+replace=$3
+
+_usage()
+{
+	echo "Usage: resdown [%-REDUCTION] [FILE EXTENSION] [REPLACE OPTION: -r]";
+	exit;
+}
+
+if [[ $# -lt 2 || $# -gt 3 ]]; then
+	echo "resdown: wrong number of arguments";
+	_usage;
+fi
+if [[ $1 -lt 1 || $1 -gt 99 ]]; then
+	echo "resdown: missing reduction percentage operand";
+	echo "	 or it has an invalid range";
+	_usage;
+fi
+if [[ -n "$replace" && "$replace" != "-r" ]]; then
+	echo "resdown: $replace is an unknown option";
+	_usage;
+fi
+
+percreduc=`echo "(100 - $perc)" | bc`
+for file in *.$ext ; do
+	if [ -z "$replace" ]; then
+		echo "converting $file to reduced-$file (-$1%)";
+		convert "$file" -quality "$percreduc" reduced-"$file";
+	elif [[ -n "$replace" && "$replace" == "-r" ]]; then
+		echo "converting $file to reduced $file (-$1%)";
+		convert "$file" -quality "$percreduc" "$file";
+	fi
+done

@@ -1,0 +1,46 @@
+#!/bin/bash
+# A script to monitor the remote connected hosts
+
+google='https://www.google.com/search?q='
+
+_showHosts()
+{
+	ips=`netstat -ntu | awk '{print $5}' | tail -n+3`
+
+	lst=( $ips )
+	len=${#lst[@]}
+
+	for (( i=0; i<$len; i++ ))
+	do
+		ip=${lst[$i]}
+		host=${ip%:*}
+		
+		orgname=`whois "${host}" | grep "OrgName" | awk -F":" '{print $2}'`
+		orgname=`echo "${orgname}" | sed -e "s/[[:space:]]\+/ /g"`
+		owner=`whois "${host}" | grep "owner:" | awk -F":" '{print $2}'`
+		owner=`echo "${owner}" | sed -e "s/[[:space:]]\+/ /g"`
+		descr=`whois "${host}" | grep "descr" | awk -F":" '{print $2}'`
+		descr=`echo "${descr}" | sed -e "s/[[:space:]]\+/ /g"`
+		
+		if [ ! -z "${orgname}" -a "${orgname}" != " " ]; then
+			nospace=${orgname// /%20}
+			gsearch=$google$nospace
+			echo "${i}: ${host} :: ${orgname} (${gsearch})"
+		elif [ ! -z "${owner}" -a "$owner" != " " ]; then	
+			nospace=${owner// /%20}
+			gsearch=$google$nospace
+			echo "$i: ${host} :: ${owner} (${gsearch})"
+		elif [ ! -z "${descr}" -a "${descr}" != " " ]; then	
+			nospace=${descr// /%20}
+			gsearch=$google$nospace
+			echo "$i: ${host} :: ${descr} (${gsearch})"
+		fi
+	done
+}
+
+while :
+do
+	_showHosts
+	echo ""
+	sleep 1
+done

@@ -1,0 +1,89 @@
+#!/bin/bash
+# sets up local environment for any remote hosts.
+
+dots=$HOME/.sys-utils/dotfiles
+ 
+# .bashrc
+if [[ ! -f "$HOME/.bashrc.backup" ]]; then 
+    echo "Backing up $HOME/.bashrc"
+    if [[ -f "$HOME/.bashrc" ]]; then
+        cp $HOME/.bashrc $HOME/.bashrc.backup
+    fi
+fi
+
+# .bash_aliases
+if [[ ! -f "$HOME/.bash_aliases.backup" ]]; then 
+    echo "Backing up $HOME/.bash_aliases and linking"
+    if [[ -f "$HOME/.bash_aliases" ]]; then
+        cp $HOME/.bash_aliases $HOME/.bash_aliases.backup
+    fi
+    ln -sf $dots/bash_aliases $HOME/.bash_aliases
+fi
+
+# .bash
+if [[ ! -d "$HOME/.bash.backup" ]]; then 
+    echo "Backing up $HOME/.bash and linking"
+    if [[ -d "$HOME/.bash" ]]; then
+        cp -r $HOME/.bash $HOME/.bash.backup
+    fi
+    ln -sf $dots/bash $HOME/.bash
+    git clone git@github.com:jimeh/git-aware-prompt.git $HOME/.bash/git-aware-prompt
+fi
+
+# .Xdefaults
+if [[ ! -f "$HOME/.Xdefaults.backup" ]]; then
+    echo "Backing up $HOME/.Xdefaults and linking"
+    if [[ -f "$HOME/.Xdefaults" ]]; then
+        cp $HOME/.Xdefaults .Xdefaults.backup
+    fi
+    ln -sf $dots/Xdefaults $HOME/.Xdefaults
+fi
+
+# .myenv
+if [[ ! -f "$HOME/.myenv" ]]; then
+    echo "Linking $HOME/.myenv"
+    ln -sf $dots/myenv $HOME/.myenv
+fi
+
+# .fonts
+if [[ ! -d "$HOME/.fonts" ]]; then
+    echo "Linking $HOME/.fonts"
+    ln -sf $dots/fonts $HOME/.fonts
+fi
+
+# .gitignore_global
+if [[ ! -f "$HOME/.gitignore_global" ]]; then
+    echo "Linking $HOME/.gitignore_global"
+    ln -sf $dots/gitignore_global $HOME/.gitignore_global
+fi
+
+# .vim and Vundle
+if [[ ! -d "$HOME/.vim" ]]; then
+    echo "Linking $HOME/.vim"
+    ln -sf $dots/vim $HOME/.vim
+    if [[ ! -d "$HOME/.vim/bundle/Vundle.vim" ]]; then
+        echo "Getting Vundle.vim"
+        git clone https://github.com/VundleVim/Vundle.vim.git $HOME/.vim/bundle/Vundle.vim
+    fi
+fi
+
+# .vimrc
+if [[ ! -f "$HOME/.vimrc" ]]; then
+    echo "Linking $HOME/.vimrc"
+    ln -sf $dots/vimrc $HOME/.vimrc
+fi
+
+# .alacritty.yml
+if [[ ! -f "$HOME/.alacritty.yml" ]]; then
+    echo "Linking $HOME/.alacritty.yml"
+    ln -sf $dots/alacritty.yml $HOME/.alacritty.yml
+fi
+
+# for different hosts
+
+# if GCP and chromebook
+if [[ "$HOSTNAME" == "n1s8-2nvtk80" ]] || [[ "$HOSTNAME" == "penguin" ]]; then
+    if [[ ! -f "$HOME/.nod" ]]; then
+        ln -sf $dots/nod $HOME/.nod
+    fi
+fi

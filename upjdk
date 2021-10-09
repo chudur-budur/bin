@@ -1,0 +1,94 @@
+#!/bin/bash
+# downloads new a jdk, install and do all necessary craps. after installation, 
+# it does not remove the previous jdk since I have seen many people keeping 
+# multiple jdk versions on their machines. Please note that it also installs
+# java3d and jmf. So if you don't need them you need to comment out those parts.
+
+# you need to update this url when a new version comes up.
+# jdkurl="http://download.oracle.com/otn-pub/java/jdk/8u25-b17/jdk-8u25-linux-i586.tar.gz";
+# jdkurl="http://download.oracle.com/otn-pub/java/jdk/8u40-b25/jdk-8u40-linux-x64.tar.gz";
+jdkurl="http://download.oracle.com/otn-pub/java/jdk/10.0.1+10/fb4372174a714e6b8c52526dc134031e/jdk-10.0.1_linux-x64_bin.tar.gz"
+j3durl="http://download.java.net/media/java3d/builds/release/1.5.2/j3d-1_5_2-linux-amd64.bin" ;
+# http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz
+jmfurl="http://download.oracle.com/otn-pub/java/jmf/2.1.1e/jmf-2_1_1e-linux-i586.bin" ;
+
+# download jdk
+targzfile=`echo $jdkurl | awk -F/ '{print $8}'` ;
+if [ ! -f "/tmp/$targzfile" ]; then
+	echo "downloading the latest jdk ...";
+	curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" "$jdkurl" > /tmp/"$targzfile" ;
+else
+	echo "looks like the latest jdk is already in the /tmp/ folder ..." ;
+fi
+
+# move the tar.gz file to /opt/ and extract
+echo "installing $targzfile ..." ;
+sudo cp /tmp/"$targzfile" /opt/;
+cd /opt ;
+sudo tar -xvf "$targzfile" ;
+sudo rm -f "$targzfile" ;
+
+# update alternatives 
+echo "updating alternatives for $newjdkpath ..." ;
+newjdk=`ls | grep jdk | sort -r | head -n 1` ;
+newjdkpath="/opt/$newjdk";
+jdkbin="${newjdkpath}/bin" ;
+bins=( $(ls "${jdkbin}") ) ;
+for file in "${bins[@]}" 
+do
+	echo "updating alternatives: $file" ;
+	sudo update-alternatives --install "/usr/bin/${file}" "${file}" "${jdkbin}/${file}" 1 ;
+	sudo update-alternatives --set "${file}" "${jdkbin}/${file}" ;
+done
+
+# # now install the browser plugins
+# echo "installing browser plugins ..." ;
+# jrelib="${newjdkpath}/jre/lib/amd64" ;
+# sudo ln -sf "$jrelib"/libnpjp2.so /usr/lib/mozilla/plugins/libnpjp2.so ;
+# sudo ln -sf "$jrelib"/libnpjp2.so /usr/lib/chromium-browser/plugins/libnpjp2.so ;
+# 
+# # download the java3d
+# j3dbinfile=`echo $j3durl | awk -F/ '{print $9}'` ;
+# if [ ! -f "/tmp/$j3dbinfile" ]; then
+# 	echo "downloading the latest java3d ...";
+# 	curl -v -j -k -L $j3durl > /tmp/"$j3dbinfile" ;
+# else
+# 	echo "looks like the latest java3d is already in the /tmp/ folder ..." ;
+# fi
+# 
+# # install the java3d
+# echo "installing $j3dbinfile ..." ;
+# sudo cp /tmp/"$j3dbinfile" "$newjdkpath"/jre ;
+# cd "$newjdkpath"/jre ;
+# sudo chmod +x "$j3dbinfile" ;
+# sudo ./"$j3dbinfile" ;
+# sudo rm -f "$j3dbinfile" ;
+# 
+# # download the jmf
+# jmfbinfile=`echo $jmfurl | awk -F/ '{print $8}'` ;
+# if [ ! -f "/tmp/$jmfbinfile" ]; then
+# 	echo "downloading the latest jmf ...";
+# 	curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" "$jmfurl" > /tmp/"$jmfbinfile" ;
+# else
+# 	echo "looks like the latest jmf is already in the /tmp/ folder ..." ;
+# fi
+# 
+# # installing jmf
+# echo "installing $jmfbinfile ..." ;
+# # change 'tail +390 $0 > $outname' to 'tail -n +390 $0 > $outname'
+# sed -i -e 's/tail +309 \$0 > \$outname/tail -n +309 \$0 > \$outname/' /tmp/"$jmfbinfile" ;
+# sudo cp /tmp/"$jmfbinfile" /opt/ ;
+# cd /opt/ ;
+# sudo chmod +x "$jmfbinfile" ;
+# sudo ./"$jmfbinfile" ;
+# sudo rm -rf "$jmfbinfile" ;
+# 
+# initialize jmf
+# echo "initializing jmf ..." ;
+# jmfdir=`ls | grep JMF` ;
+# jmfpath="/opt/$jmfdir" ;
+# cd "$jmfpath"/bin ;
+# sudo ./jmfinit ;
+# sudo chmod -R 755 "$jmfpath" ;
+
+# end of upjdk

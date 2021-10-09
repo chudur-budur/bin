@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# echo "Enter your Username: "; read username
+username="talukde1"
+
+xfreerdp /u:$username /d:egr.msu.edu /g:gateway.egr.msu.edu /gt:rpc /gu:$username /gd:egr.msu.edu /v:remote.egr.msu.edu /load-balance-info:"tsv://MS Terminal Services Plugin.1.Remote" /f /auto-reconnect

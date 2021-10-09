@@ -1,0 +1,93 @@
+#!/bin/bash
+# a script to scan the the machines connected to the wifi router.
+
+# the mac address manufacturer look-up http service
+maclookup="http://api.macvendors.com"
+
+# get the "wlan0" part from the ifconfig command
+wlan0part=`ifconfig | grep -A 7 wlan0`;
+
+# get my mac address
+mymac=`echo "$wlan0part" | grep "HWaddr" | awk -F" " '{print $5}'`
+
+# get the "inet addr:" part from the ifconfig command
+inetaddr=`echo "$wlan0part" | grep "inet addr" | awk -F":" '{print $2}' | awk -F" " '{print $1}'`;
+
+# replace the last byte with 0, i.e. 10.0.0.3 -> 10.0.0.0
+bytes=(${inetaddr//./ })
+len=${#bytes[@]}
+len=$((len - 1))
+bytes[len]=0
+inetaddr=""
+for i in "${bytes[@]}"; do
+	if [ -z $inetaddr ]; then
+		inetaddr=$i
+	else
+		inetaddr=$inetaddr.$i
+	fi
+done
+# now the inetaddr variable has the last byte 0
+
+# get the "Mask:" part from the ifconfig command
+mask=`echo "$wlan0part" | grep "Mask" | awk -F":" '{print $4}'`;
+
+# count the total number of ones in the mask
+# IFS='.' read -a bytes <<< "$mask"
+bytes=(${mask//./ })
+totalones=0
+for i in "${bytes[@]}"; do
+	byte=`printf "%08d\n" "$(bc <<< "obase=2;$i")"`
+	ones=`echo "$byte" | grep -o "1" | wc -l`
+	totalones=$((totalones + ones))
+done
+# now totalones contains the total number of ones in the mask
+
+# now make the argument for the nmap command
+nmaparg=$inetaddr/$totalones
+echo "scanning the wifi network (from $nmaparg) ..."
+nmapout=`sudo nmap -sP -6 $nmaparg`
+
+# get the ip list from the nmap command output
+ips=`echo "$nmapout" | grep "Nmap scan report" | awk -F" " '{print $5}'`
+# IFS='\n' read -a ips <<< "$ips"
+ips=(${ips//\\n/ })
+
+# get the mac addresses from the nmap command output
+macs=`echo "$nmapout" | grep "MAC" | awk -F" " '{print $3}'`
+# IFS='\n' read -a macs <<< "$macs"
+macs=(${macs//\\n/ })
+
+# get the wireless adapter manufacturer names from the nmap command output
+names=`echo "$nmapout" | grep "MAC" | grep -o '(.\+)'`
+SAVEIFS=$IFS
+IFS=$'\n'
+# names=(${names//\\n/ })
+names=($names)
+IFS=$SAVEIFS
+# show them
+for (( i=0; i<${#ips[@]}; i++ )) 
+do
+	if [ -z "${macs[$i]}" ]; then
+		echo -e "$i\t${ips[$i]}\t$mymac\t(Me)"
+	else
+		name=${names[$i]} ;
+		mac=${macs[$i]} ;
+		if [[ $name == *"Unknown"* ]]; then
+			vendor=$(wget -qO- $maclookup/$mac);
+			if [[ -n $vendor ]]; then
+				if [[ $vendor == *"<html>"* ]]; then
+					vendor=$(echo $vendor | \
+						grep -io "<title>.*</title>" | \
+						grep -io ">[^<]*" | grep -io "[^>]*")
+					vendor="$vendor!!!" ;
+				fi
+				echo -e "$i\t${ips[$i]}\t$mac\t($vendor)"
+			else
+				vendor=$name;
+				echo -e "$i\t${ips[$i]}\t$mac\t$vendor"
+			fi
+		else
+			echo -e "$i\t${ips[$i]}\t$mac\t$name"
+		fi
+	fi
+done
