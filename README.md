@@ -1,2 +1,2 @@
 # bin
-Misc bins for personal use.
+Misc binaries for personal use. They stay in `~`
